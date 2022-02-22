@@ -1,6 +1,6 @@
 # Monads Based on the OneOf Union Type
 
-This library adds common monads built upon the excellent [OneOf](https://github.com/mcintyre321/OneOf) union type library.
+This library adds common monads to the fantastic [OneOf](https://github.com/mcintyre321/OneOf) union type library.
 
 ## The Option Monad
 

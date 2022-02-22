@@ -4,6 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageId>OneOf.Monads</PackageId>
+    <Version Condition="'$(GITHUB_BUILD_NUMBER)' != ''">1.$(GITHUB_BUILD_NUMBER)</Version>
+    <Version Condition="'$(GITHUB_BUILD_NUMBER)' == ''">1.0</Version>
+    <Authors>Erik Svensson</Authors>
+    <Copyright>Erik Svensson</Copyright>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/svan-jansson/OneOf.Monads</RepositoryUrl>
+    <Description>This library adds common monads to the fantastic OneOf union type library.</Description>
+    <PackageLicenseFile></PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
