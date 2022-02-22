@@ -2,6 +2,12 @@
 
 This library adds common monads to the fantastic [OneOf](https://github.com/mcintyre321/OneOf) union type library.
 
+## Installation
+
+```bash
+dotnet add package OneOf.Monads
+```
+
 ## The Option Monad
 
 The `Option<T>` monad extends `OneOf<None, Some<T>>` and is modeled after [F#'s Option Type](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/options). It is functionally similar to [Haskell's Maybe Monad](https://wiki.haskell.org/Maybe). 
