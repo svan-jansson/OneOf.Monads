@@ -46,4 +46,40 @@ public class OptionTests
 
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public void Convert_to_option_type_using_map()
+    {
+        var expected = "~20~";
+        var option = Option<int>.Some(20);
+
+        var actual = option
+                        .Bind(IsGreaterThan10)
+                        .Bind(IsEven)
+                        .Map(i => i.ToString())
+                        .Map(s => $"~{s}~")
+                        .Match(
+                            none => "could not convert number",
+                            some => some.Value);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Pipeline_does_not_break_on_None()
+    {
+        var expected = "could not convert number";
+        var option = Option<int>.Some(19);
+
+        var actual = option
+                        .Bind(IsGreaterThan10)
+                        .Bind(IsEven)
+                        .Map(i => i.ToString())
+                        .Map(s => $"~{s}~")
+                        .Match(
+                            none => "could not convert number",
+                            some => some.Value);
+
+        Assert.Equal(expected, actual);
+    }
 }
