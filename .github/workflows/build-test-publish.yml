@@ -23,15 +23,11 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-      
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: brandedoutcast/publish-nuget@v2.5.5
-        with:
-          PROJECT_FILE_PATH: ./src/OneOf.Monads.csproj
-          PACKAGE_NAME: OneOf.Monads
-          VERSION_STATIC: 1.${{github.run_number}}
-          NUGET_KEY: ${{secrets.NUGET_KEY}}
+    - name: Pack
+      if: github.ref == 'refs/heads/main'
+      run: dotnet pack -c release -o .
+      env:
+        GITHUB_BUILD_NUMBER: ${{github.run_number}}
+    - name: Publish
+      if: github.ref == 'refs/heads/main'
+      run: dotnet nuget push OneOf.Monads.1.${{github.run_number}}.0.nupkg -k ${{secrets.NUGET_KEY}}
