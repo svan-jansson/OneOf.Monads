@@ -26,6 +26,7 @@ jobs:
       
   publish:
     needs: build
+    runs-on: ubuntu-latest
     
     steps:
       - uses: brandedoutcast/publish-nuget@v2.5.5
@@ -33,4 +34,4 @@ jobs:
           PROJECT_FILE_PATH: ./src/OneOf.Monads.csproj
           PACKAGE_NAME: OneOf.Monads
           VERSION_STATIC: 1.${{github.run_number}}
-      NUGET_KEY: ${{secrets.NUGET_KEY}}
+          NUGET_KEY: ${{secrets.NUGET_KEY}}
