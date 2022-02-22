@@ -30,4 +30,4 @@ jobs:
         GITHUB_BUILD_NUMBER: ${{github.run_number}}
     - name: Publish
       if: github.ref == 'refs/heads/main'
-      run: dotnet nuget push OneOf.Monads.1.${{github.run_number}}.0.nupkg -k ${{secrets.NUGET_KEY}}
+      run: dotnet nuget push OneOf.Monads.1.${{github.run_number}}.0.nupkg -k ${{secrets.NUGET_KEY}} -s https://api.nuget.org/v3/index.json
