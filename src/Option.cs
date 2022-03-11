@@ -1,31 +1,40 @@
 ﻿using System;
 
-namespace OneOf.Monads;
-
-public record Some<T>(T Value);
-public record None();
-
-public class Option<T> : OneOfBase<None, Some<T>>
+namespace OneOf.Monads
 {
-    public Option(OneOf<None, Some<T>> _) : base(_) { }
-    public static implicit operator Option<T>(None _) => new Option<T>(_);
-    public static implicit operator Option<T>(Some<T> _) => new Option<T>(_);
+    public struct Some<T>
+    {
+        public T Value { get; }
+        public Some(T value)
+        {
+            Value = value;
+        }
+    }
 
-    public static Option<T> None() => new None();
-    public static Option<T> Some(T value) => new Some<T>(value);
+    public struct None { };
 
-    public bool IsNone() => this.IsT0;
-    public bool IsSome() => this.IsT1;
+    public class Option<T> : OneOfBase<None, Some<T>>
+    {
+        public Option(OneOf<None, Some<T>> _) : base(_) { }
+        public static implicit operator Option<T>(None _) => new Option<T>(_);
+        public static implicit operator Option<T>(Some<T> _) => new Option<T>(_);
 
-    new public T Value() => IsSome() ? this.AsT1.Value : throw new NullReferenceException();
+        public static Option<T> None() => new None();
+        public static Option<T> Some(T value) => new Some<T>(value);
 
-    public Option<T> Bind(Func<T, Option<T>> @continue)
-        => this.Match(
-            none => none,
-            some => @continue(some.Value));
+        public bool IsNone() => this.IsT0;
+        public bool IsSome() => this.IsT1;
 
-    public Option<TOut> Map<TOut>(Func<T, TOut> @continue)
-        => this.Match(
-            none => Option<TOut>.None(),
-            some => Option<TOut>.Some(@continue(some.Value)));
+        new public T Value() => IsSome() ? this.AsT1.Value : throw new NullReferenceException();
+
+        public Option<T> Bind(Func<T, Option<T>> @continue)
+            => this.Match(
+                none => none,
+                some => @continue(some.Value));
+
+        public Option<TOut> Map<TOut>(Func<T, TOut> @continue)
+            => this.Match(
+                none => Option<TOut>.None(),
+                some => Option<TOut>.Some(@continue(some.Value)));
+    }
 }

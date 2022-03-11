@@ -1,10 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<PreserveCompilationContext>false</PreserveCompilationContext>
+	<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <PackageId>OneOf.Monads</PackageId>
     <Version Condition="'$(GITHUB_BUILD_NUMBER)' != ''">1.$(GITHUB_BUILD_NUMBER)</Version>
     <Version Condition="'$(GITHUB_BUILD_NUMBER)' == ''">1.0</Version>
@@ -18,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf" Version="3.0.211" />
+    <PackageReference Include="OneOf" Version="3.0.216"/>
   </ItemGroup>
 
 </Project>
