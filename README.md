@@ -1,3 +1,5 @@
+[![Build, Test & Publish](https://github.com/svan-jansson/OneOf.Monads/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/svan-jansson/OneOf.Monads/actions/workflows/build-test-publish.yml) [![Nuget](https://img.shields.io/nuget/v/OneOf.Monads)](https://www.nuget.org/packages/OneOf.Monads/)
+
 # Monads Based on the OneOf Union Type
 
 This library adds common monads to the fantastic [OneOf](https://github.com/mcintyre321/OneOf) union type library.
@@ -10,7 +12,7 @@ dotnet add package OneOf.Monads
 
 ## The Option Monad
 
-The `Option<T>` monad extends `OneOf<None, Some<T>>` and is modeled after [F#'s Option Type](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/options). It is functionally similar to [Haskell's Maybe Monad](https://wiki.haskell.org/Maybe). 
+The `Option<T>` monad extends `OneOf<None, Some<T>>` and is modeled after [F#'s Option Type](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/options). It is functionally similar to [Haskell's Maybe Monad](https://wiki.haskell.org/Maybe).
 
 This monad provides a mechanism for conditional execution in a workflow/pipeline-style manner. Great for readability and error handling without `try`/`catch`.
 
@@ -42,7 +44,7 @@ void Conditional_execution_when_contract_is_fulfilled(int evenNumber)
                     .Bind(IsEven)
                     .Match(
                         none => 0,
-                        some => some.Value); 
+                        some => some.Value);
 
     Assert.Equal(expected, actual);
 }
@@ -73,6 +75,7 @@ public void Convert_to_option_type_using_map()
     Assert.Equal(expected, actual);
 }
 ```
+
 ## The Result Monad
 
 The `Result<TError, TSuccess>` monad is similar to the `Option<T>` monad, but it also defines a value for the negative case, expressed as `TError`. Instead of the `Bind` function, it uses the control flow semantic `AndThen`. It also has the `GetOrElse` function that is used to define a fallback value for a pipeline. This monad is inspired by Kotlin and provides readable data transformation pipelines and monadic error handling.
