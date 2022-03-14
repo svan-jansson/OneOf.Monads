@@ -76,6 +76,31 @@ public void Convert_to_option_type_using_map()
 }
 ```
 
+### Option.Filter Example
+
+`Filter` allows you to filter the current value of the option monad by passing a filter function. If the filter function returns `false` it will resolve to `None`. Giving you a convenient way of conditionally controlling a flow.
+
+```csharp
+using OneOf.Monads
+
+[Fact]
+public void Use_filter_to_create_a_conditional_pipeline()
+{
+    var expected = 0;
+    var option = Option<int>.Some(20);
+
+    var actual = option
+                    .Filter(i => i > 15) // True
+                    .Filter(i => i > 20) // False
+                    .Filter(i => i > 30) // Skipped
+                    .Match(
+                        none => 0,
+                        some => some.Value);
+
+    Assert.Equal(expected, actual);
+}
+```
+
 ## The Result Monad
 
 The `Result<TError, TSuccess>` monad is similar to the `Option<T>` monad, but it also defines a value for the negative case, expressed as `TError`. Instead of the `Bind` function, it uses the control flow semantic `AndThen`. It also has the `GetOrElse` function that is used to define a fallback value for a pipeline. This monad is inspired by Kotlin and provides readable data transformation pipelines and monadic error handling.

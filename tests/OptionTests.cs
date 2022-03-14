@@ -100,5 +100,31 @@ namespace OneOf.Monads.UnitTest
 
             Assert.Equal(expected, actual);
         }
+
+        [Fact]
+        public void Use_filter_to_get_conditional_result()
+        {
+            var expected = 5;
+            var option = Option<int>.Some(5);
+            var actual = option
+                .Filter(i => i > 0)
+                .Filter(i => i % 2 > 0)
+                .Match(
+                    none => 0,
+                    some => some.Value);
+
+            Assert.Equal(expected, actual);
+
+            expected = 0;
+            option = Option<int>.Some(4);
+            actual = option
+                .Filter(i => i > 0)
+                .Filter(i => i % 2 > 0)
+                .Match(
+                    none => 0,
+                    some => some.Value);
+
+            Assert.Equal(expected, actual);
+        }
     }
 }

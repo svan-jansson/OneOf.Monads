@@ -36,5 +36,10 @@ namespace OneOf.Monads
             => this.Match(
                 none => Option<TOut>.None(),
                 some => Option<TOut>.Some(@continue(some.Value)));
+
+        public Option<T> Filter(Func<T, bool> filter)
+            => this.Match(
+                none => none,
+                some => filter(some.Value) ? some : None());
     }
 }
