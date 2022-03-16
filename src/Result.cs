@@ -18,24 +18,24 @@ namespace OneOf.Monads
         public TSuccess SuccessValue() => IsSuccess() ? this.AsT1.Value : throw new NullReferenceException();
 
         public Result<TError, TSuccess> AndThen(Func<TSuccess, Result<TError, TSuccess>> then)
-            => this.Match(
+            => Match(
                 error => error,
                 success => then(success.Value));
 
         public TSuccess GetOrElse(Func<TError, TSuccess> fallback)
-            => this.Match(
+            => Match(
                 error => fallback(error.Value),
                 success => success.Value);
 
         public Result<TError, TOut> Map<TOut>(Func<TSuccess, TOut> mapSuccess)
-            => this.Match(
+            => Match(
                 error => Result<TError, TOut>.Error(error.Value),
                 success => Result<TError, TOut>.Success(mapSuccess(success.Value)));
 
         public Result<TNewError, TNewSuccess> Map<TNewError, TNewSuccess>(
             Func<TError, TNewError> mapError,
             Func<TSuccess, TNewSuccess> mapSuccess)
-            => this.Match(
+            => Match(
                 error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
                 success => Result<TNewError, TNewSuccess>.Success(mapSuccess(success.Value)));
     }

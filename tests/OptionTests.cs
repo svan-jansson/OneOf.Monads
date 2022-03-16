@@ -9,7 +9,7 @@ namespace OneOf.Monads.UnitTest
         {
             if (i > 10)
             {
-                return new Some<int>(i);
+                return i;
             }
             else
             {
@@ -21,7 +21,7 @@ namespace OneOf.Monads.UnitTest
         {
             if (i % 2 == 0)
             {
-                return new Some<int>(i);
+                return i;
             }
             else
             {
@@ -35,7 +35,7 @@ namespace OneOf.Monads.UnitTest
         public void Conditional_execution_when_contract_is_fulfilled(int evenNumber)
         {
             var expected = evenNumber;
-            var option = Option<int>.Some(evenNumber);
+            Option<int> option = evenNumber;
 
             var actual = option
                             .Bind(IsGreaterThan10)
@@ -53,7 +53,7 @@ namespace OneOf.Monads.UnitTest
         public void Conditional_execution_when_contract_is_not_fulfilled(int oddNumber)
         {
             var expected = 0;
-            var option = Option<int>.Some(oddNumber);
+            Option<int> option = oddNumber;
 
             var actual = option
                             .Bind(IsGreaterThan10)
@@ -69,7 +69,7 @@ namespace OneOf.Monads.UnitTest
         public void Convert_to_option_type_using_map()
         {
             var expected = "~20~";
-            var option = Option<int>.Some(20);
+            Option<int> option = 20;
 
             var actual = option
                             .Bind(IsGreaterThan10)
@@ -87,7 +87,7 @@ namespace OneOf.Monads.UnitTest
         public void Pipeline_does_not_break_on_None()
         {
             var expected = "could not convert number";
-            var option = Option<int>.Some(19);
+            Option<int> option = 19;
 
             var actual = option
                             .Bind(IsGreaterThan10)
@@ -105,7 +105,7 @@ namespace OneOf.Monads.UnitTest
         public void Use_filter_to_get_conditional_result()
         {
             var expected = 5;
-            var option = Option<int>.Some(5);
+            Option<int> option = 5;
             var actual = option
                 .Filter(i => i > 0)
                 .Filter(i => i % 2 > 0)

@@ -26,10 +26,10 @@ In this example we create a contract that guarantees that a given number is grea
 using OneOf.Monads
 
 Option<int> IsGreaterThan10(int i)
-        => i > 10 ? new Some<int>(i) : new None();
+        => i > 10 ? i : new None();
 
 Option<int> IsEven(int i)
-    => i % 2 == 0 ? new Some<int>(i) : new None();
+    => i % 2 == 0 ? i : new None();
 
 [Theory]
 [InlineData(12)]
@@ -37,7 +37,7 @@ Option<int> IsEven(int i)
 void Conditional_execution_when_contract_is_fulfilled(int evenNumber)
 {
     var expected = evenNumber;
-    var option = Option<int>.Some(evenNumber);
+    Option<int> option = evenNumber;
 
     var actual = option
                     .Bind(IsGreaterThan10)
@@ -61,7 +61,7 @@ using OneOf.Monads
 public void Convert_to_option_type_using_map()
 {
     var expected = "~20~";
-    var option = Option<int>.Some(20);
+    Option<int> option = 20;
 
     var actual = option
                     .Bind(IsGreaterThan10)
@@ -87,7 +87,7 @@ using OneOf.Monads
 public void Use_filter_to_create_a_conditional_pipeline()
 {
     var expected = 0;
-    var option = Option<int>.Some(20);
+    Option<int> option = 20;
 
     var actual = option
                     .Filter(i => i > 15) // True
