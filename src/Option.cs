@@ -28,7 +28,7 @@ namespace OneOf.Monads
 
         new public T Value() => IsSome() ? this.AsT1.Value : throw new NullReferenceException();
 
-        public Option<T> Bind(Func<T, Option<T>> @continue)
+        public Option<TOut> Bind<TOut>(Func<T, Option<TOut>> @continue)
             => Match(
                 none => none,
                 some => @continue(some.Value));
@@ -42,5 +42,35 @@ namespace OneOf.Monads
             => Match(
                 none => none,
                 some => filter(some.Value) ? some : None());
+
+        /// <summary>
+        /// Do let's you fire and forget an action that is executed only when the value is Some<T>
+        /// </summary>
+        /// <param name="do">An action that takes a single parameter of T</param>
+        /// <returns>The current state of the Option</returns>
+        public Option<T> Do(Action<T> @do)
+        {
+            if (IsSome())
+            {
+                @do(this.Value());
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Do let's you fire and forget an action that is executed only when the value is None
+        /// </summary>
+        /// <param name="do">An action that takes no parameters</param>
+        /// <returns>The current state of the Option</returns>
+        public Option<T> DoIfNone(Action @do)
+        {
+            if (IsNone())
+            {
+                @do();
+            }
+
+            return this;
+        }
     }
 }

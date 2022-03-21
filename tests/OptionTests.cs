@@ -48,6 +48,25 @@ namespace OneOf.Monads.UnitTest
         }
 
         [Theory]
+        [InlineData(5, "above two")]
+        [InlineData(1, "below or equal to two")]
+        public void Bind_to_different_data_type(int value, string expected)
+        {
+            Option<int> option = value;
+
+            var actual = option
+                .Bind(i => i > 2
+                    ? Option<string>.Some("above two")
+                    : Option<string>.None())
+                .Match(
+                    none => "below or equal to two",
+                    some => some.Value);
+
+            Assert.Equal(expected, actual);
+
+        }
+
+        [Theory]
         [InlineData(11)]
         [InlineData(23)]
         public void Conditional_execution_when_contract_is_not_fulfilled(int oddNumber)
@@ -125,6 +144,26 @@ namespace OneOf.Monads.UnitTest
                     some => some.Value);
 
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Use_Do_to_execute_conditional_actions()
+        {
+            Option<int> option = 5;
+
+            option
+                .DoIfNone(() => Assert.True(false, "this should not be executed"))
+                .Do(i => Assert.Equal(5, i));
+        }
+
+        [Fact]
+        public void Use_DoIfNone_to_execute_conditional_actions()
+        {
+            Option<int> option = new None();
+
+            option
+                .Do(i => Assert.True(false, "this should not be executed"))
+                .DoIfNone(() => Assert.True(true, "this should be executed"));
         }
     }
 }
