@@ -10,6 +10,11 @@ This library adds common monads to the fantastic [OneOf](https://github.com/mcin
 dotnet add package OneOf.Monads
 ```
 
+## Code Examples
+
+- [Using the Option monad to manipulate a stream of integers](examples/option-examples/Program.cs)
+- [Using the Result monad to compose data from different API calls](examples/result-examples/Program.cs)
+
 ## The Option Monad
 
 The `Option<T>` monad extends `OneOf<None, Some<T>>` and is modeled after [F#'s Option Type](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/options). It is functionally similar to [Haskell's Maybe Monad](https://wiki.haskell.org/Maybe).
