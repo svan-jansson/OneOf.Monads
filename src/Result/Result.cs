@@ -9,6 +9,9 @@ namespace OneOf.Monads
         public static implicit operator Result<TError, TSuccess>(Error<TError> _) => new Result<TError, TSuccess>(_);
         public static implicit operator Result<TError, TSuccess>(Success<TSuccess> _) => new Result<TError, TSuccess>(_);
 
+        public static implicit operator Result<TError, TSuccess>(TSuccess value) => new Success<TSuccess>(value);
+        public static implicit operator Result<TError, TSuccess>(TError value) => new Error<TError>(value);
+
         public static Result<TError, TSuccess> Error(TError value) => new Error<TError>(value);
         public static Result<TError, TSuccess> Success(TSuccess value) => new Success<TSuccess>(value);
 
@@ -38,5 +41,44 @@ namespace OneOf.Monads
             => Match(
                 error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
                 success => Result<TNewError, TNewSuccess>.Success(mapSuccess(success.Value)));
+
+        /// <summary>
+        /// Do let's you fire and forget an action that is executed only when the value is <see cref="TSuccess"/> 
+        /// </summary>
+        /// <param name="do">An action that takes a single parameter of <see cref="TSuccess"/></param>
+        /// <returns>The current state of the Result</returns>
+        public Result<TError, TSuccess> Do(Action<TSuccess> @do)
+        {
+            if (IsSuccess())
+            {
+                @do(this.SuccessValue());
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Do let's you fire and forget an action that is executed only when the value is <see cref="TError"/> 
+        /// </summary>
+        /// <param name="do">An action that takes a single parameter of <see cref="TError"/></param>
+        /// <returns>The current state of the Result</returns>
+        public Result<TError, TSuccess> DoIfError(Action<TError> @do)
+        {
+            if (IsError())
+            {
+                @do(this.ErrorValue());
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Downcast to an <see cref="Option<TSuccess>"/>. When result state <see cref="TError"/> it will cast to <see cref="None"/>.
+        /// </summary>
+        /// <returns></returns>
+        public Option<TSuccess> ToOption()
+            => Match(
+                error => Option<TSuccess>.None(),
+                success => Option<TSuccess>.Some(success.Value));
     }
 }

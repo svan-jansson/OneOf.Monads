@@ -72,5 +72,39 @@ namespace OneOf.Monads.UnitTests
             Assert.Equal(25, add10ReturnMax25(15));
             Assert.Equal(25, add10ReturnMax25(20));
         }
+
+        [Fact]
+        public void Use_Do_to_execute_conditional_actions()
+        {
+            Result<Exception, int> result = 5;
+
+            result
+                .DoIfError(_ => Assert.True(false, "this should not be executed"))
+                .Do(i => Assert.Equal(5, i));
+        }
+
+        [Fact]
+        public void Use_DoIfError_to_execute_conditional_actions()
+        {
+            Result<Exception, int> result = new Exception("this is an error");
+
+            result
+                .DoIfError(error => Assert.Equal("this is an error", error.Message))
+                .Do(i => Assert.True(false, "this should not be executed"));
+        }
+
+        [Fact]
+        public void Result_can_be_downcasted_to_option()
+        {
+            Result<Exception, int> result = new Exception("this is an error");
+            result.ToOption().Switch(
+                none => Assert.True(true, "Error should map to None"),
+                some => Assert.True(false, "this should not be executed"));
+
+            result = 5;
+            result.ToOption().Switch(
+                none => Assert.True(false, "this should not be executed"),
+                some => Assert.Equal(5, some.Value));
+        }
     }
 }

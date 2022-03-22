@@ -103,7 +103,7 @@ public void Use_filter_to_create_a_conditional_pipeline()
 
 ## The Result Monad
 
-The `Result<TError, TSuccess>` monad is similar to the `Option<T>` monad, but it also defines a value for the negative case, expressed as `TError`. Instead of the `Bind` function, it uses the control flow semantic `AndThen`. It also has the `GetOrElse` function that is used to define a fallback value for a pipeline. This monad is inspired by Kotlin and provides readable data transformation pipelines and monadic error handling.
+The `Result<TError, TSuccess>` monad is similar to the `Option<T>` monad, but it also defines a value for the negative case, expressed as `TError`. Instead of the `Bind` function, it uses the control flow semantic `AndThen`. It also has the `GetOrElse` function that is used to define a fallback value for a pipeline. This monad is inspired by [kotlin-result](https://github.com/michaelbull/kotlin-result/) and provides readable data transformation pipelines and monadic error handling.
 
 ### Result.AndThen Example
 
