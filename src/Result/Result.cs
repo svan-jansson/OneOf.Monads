@@ -20,10 +20,17 @@ namespace OneOf.Monads
         public TError ErrorValue() => IsError() ? this.AsT0.Value : throw new NullReferenceException();
         public TSuccess SuccessValue() => IsSuccess() ? this.AsT1.Value : throw new NullReferenceException();
 
-        public Result<TError, TSuccess> AndThen(Func<TSuccess, Result<TError, TSuccess>> then)
+        public Result<TError, TOut> AndThen<TOut>(Func<TSuccess, Result<TError, TOut>> andThen)
             => Match(
-                error => error,
-                success => then(success.Value));
+                error => Result<TError, TOut>.Error(error.Value),
+                success => andThen(success.Value));
+
+        public Result<TNewError, TNewSuccess> AndThen<TNewError, TNewSuccess>(
+            Func<TError, TNewError> mapError,
+            Func<TSuccess, Result<TNewError, TNewSuccess>> andThen)
+            => Match(
+                error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
+                success => andThen(success.Value));
 
         public TSuccess GetOrElse(Func<TError, TSuccess> fallback)
             => Match(
