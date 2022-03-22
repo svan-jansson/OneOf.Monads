@@ -2,6 +2,9 @@
 
 namespace OneOf.Monads
 {
+    /// <summary>
+    /// Represents some value of type T
+    /// </summary>
     public struct Some<T>
     {
         public T Value { get; }
@@ -11,8 +14,14 @@ namespace OneOf.Monads
         }
     }
 
+    /// <summary>
+    /// Represents no value
+    /// </summary>
     public struct None { };
 
+    /// <summary>
+    /// Union of <c>None</c> and <c>Some<T></c> with monad features for the Maybe flow control
+    /// </summary>
     public class Option<T> : OneOfBase<None, Some<T>>
     {
         public Option(OneOf<None, Some<T>> _) : base(_) { }
@@ -26,18 +35,37 @@ namespace OneOf.Monads
         public bool IsNone() => this.IsT0;
         public bool IsSome() => this.IsT1;
 
+        /// <summary>
+        /// Returns the current value. Will throw <c>NullReferenceException</c> if current option state is None.
+        /// </summary>
         new public T Value() => IsSome() ? this.AsT1.Value : throw new NullReferenceException();
 
-        public Option<TOut> Bind<TOut>(Func<T, Option<TOut>> @continue)
+        /// <summary>
+        /// Bind the <c>Option<T></c> to an <c>Option<TOut></c> using a binder function. The binder function will not be executed if the current state of the option is <c>None</c>.
+        /// </summary>
+        /// <param name="binder">A function that returns an <c>Option<TOut></c></param>
+        /// <returns>An option of the output type of the binder. </returns>
+        public Option<TOut> Bind<TOut>(Func<T, Option<TOut>> binder)
             => Match(
                 none => none,
-                some => @continue(some.Value));
+                some => binder(some.Value));
 
-        public Option<TOut> Map<TOut>(Func<T, TOut> @continue)
+        /// <summary>
+        /// Map the value of the option to an <c>Option<TOut></c> using a mapping function. The mapping function will not be executed if the current state of the option is <c>None</c>.
+        /// </summary>
+        /// <param name="mapping">A function that returns a value of <c>TOut</c></param>
+        /// <typeparam name="TOut"></typeparam>
+        /// <returns>An option of the output type of the mapping</returns>
+        public Option<TOut> Map<TOut>(Func<T, TOut> mapping)
             => Match(
                 none => Option<TOut>.None(),
-                some => Option<TOut>.Some(@continue(some.Value)));
+                some => Option<TOut>.Some(mapping(some.Value)));
 
+        /// <summary>
+        /// Filter the value using a filter function. The filter function will not be executed if the current state of the option is <c>None</c>.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns><c>Some</c> when filter returns true. <c>None</c> when filter returns false or current state of option is <c>None</c></returns>
         public Option<T> Filter(Func<T, bool> filter)
             => Match(
                 none => none,

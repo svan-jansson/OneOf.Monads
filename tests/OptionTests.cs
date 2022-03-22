@@ -165,5 +165,42 @@ namespace OneOf.Monads.UnitTest
                 .Do(i => Assert.True(false, "this should not be executed"))
                 .DoIfNone(() => Assert.True(true, "this should be executed"));
         }
+
+        [Fact]
+        public void ToOption_should_return_Some_for_value_types()
+        {
+            int i = default;
+            i.ToOption()
+                .Switch(
+                    none => Assert.True(false, "should not be None"),
+                    some => Assert.True(true, "should be Some<int>"));
+
+            i = 5;
+            i.ToOption()
+                .Switch(
+                    none => Assert.True(false, "should not be None"),
+                    some => Assert.True(true, "should be Some<int>"));
+        }
+
+        [Fact]
+        public void ToOption_should_return_Some_or_None_for_reference_types()
+        {
+            TestClass t = default;
+            t.ToOption()
+                .Switch(
+                    none => Assert.True(true, "should be None"),
+                    some => Assert.True(false, "should not be Some<TestClass>"));
+
+            t = new TestClass();
+            t.ToOption()
+                .Switch(
+                    none => Assert.True(false, "should not be None"),
+                    some => Assert.True(true, "should be Some<TestClass>"));
+        }
+
+        class TestClass
+        {
+
+        }
     }
 }
