@@ -106,5 +106,22 @@ namespace OneOf.Monads.UnitTests
                 none => Assert.True(false, "this should not be executed"),
                 some => Assert.Equal(5, some.Value));
         }
+
+        [Fact]
+        public void Result_with_implied_exception_can_wrap_caught_exceptions()
+        {
+            Result.RunCatching(() =>
+                {
+                    throw new Exception("Error that should be caught");
+
+                    return "a string";
+                })
+                .DoIfError((actual) => Assert.IsType<Exception>(actual))
+                .Do((_) => Assert.False(true));
+
+            Result.RunCatching(() => "a string")
+                .DoIfError((_) => Assert.True(false))
+                .Do((actual) => Assert.Equal("a string", actual));
+        }
     }
 }

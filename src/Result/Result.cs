@@ -3,6 +3,29 @@ using OneOf.Types;
 
 namespace OneOf.Monads
 {
+    public static class Result
+    {
+        public static Result<TSuccess> RunCatching<TSuccess>(Func<TSuccess> codeBlock)
+        {
+            try
+            {
+                return codeBlock();
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
+    }
+    public class Result<TSuccess> : Result<Exception, TSuccess>
+    {
+        public Result(OneOf<Error<Exception>, Success<TSuccess>> _) : base(_) { }
+        public static implicit operator Result<TSuccess>(Error<Exception> _) => new Result<TSuccess>(_);
+        public static implicit operator Result<TSuccess>(Success<TSuccess> _) => new Result<TSuccess>(_);
+        public static implicit operator Result<TSuccess>(TSuccess value) => new Success<TSuccess>(value);
+        public static implicit operator Result<TSuccess>(Exception value) => new Error<Exception>(value);
+    }
+
     public class Result<TError, TSuccess> : OneOfBase<Error<TError>, Success<TSuccess>>
     {
         public Result(OneOf<Error<TError>, Success<TSuccess>> _) : base(_) { }
