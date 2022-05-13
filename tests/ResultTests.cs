@@ -28,7 +28,7 @@ namespace OneOf.Monads.UnitTests
 
             Action<int> doMath = (divideBy)
                 => Divide(12, divideBy)
-                    .AndThen(result => Divide(result, 2))
+                    .Bind(result => Divide(result, 2))
                     .Map(result => result * 2)
                     .Switch(
                         error => throw new DivideByZeroException(error.Value),
@@ -42,7 +42,7 @@ namespace OneOf.Monads.UnitTests
         }
 
         [Fact]
-        public void GetOrElse_lets_you_define_fallback_values()
+        public void Unwrap_lets_you_define_fallback_values()
         {
             var maxLimitException = new Exception();
             maxLimitException.Data.Add("max", 25);
@@ -63,10 +63,10 @@ namespace OneOf.Monads.UnitTests
 
             Func<int, int> add10ReturnMax25 = (start)
                 => Result<Exception, int>.Success(start)
-                    .AndThen(add5)
-                    .AndThen(add5)
-                    .AndThen(checkIsBelow25)
-                    .GetOrElse(exception => (int)exception.Data["max"]);
+                    .Bind(add5)
+                    .Bind(add5)
+                    .Bind(checkIsBelow25)
+                    .Unwrap(exception => (int)exception.Data["max"]);
 
             Assert.Equal(20, add10ReturnMax25(10));
             Assert.Equal(25, add10ReturnMax25(15));
@@ -105,23 +105,6 @@ namespace OneOf.Monads.UnitTests
             result.ToOption().Switch(
                 none => Assert.True(false, "this should not be executed"),
                 some => Assert.Equal(5, some.Value));
-        }
-
-        [Fact]
-        public void Result_with_implied_exception_can_wrap_caught_exceptions()
-        {
-            Result.RunCatching(() =>
-                {
-                    throw new Exception("Error that should be caught");
-
-                    return "a string";
-                })
-                .DoIfError((actual) => Assert.IsType<Exception>(actual))
-                .Do((_) => Assert.False(true));
-
-            Result.RunCatching(() => "a string")
-                .DoIfError((_) => Assert.True(false))
-                .Do((actual) => Assert.Equal("a string", actual));
         }
     }
 }

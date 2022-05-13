@@ -3,29 +3,6 @@ using OneOf.Types;
 
 namespace OneOf.Monads
 {
-    public static class Result
-    {
-        public static Result<TSuccess> RunCatching<TSuccess>(Func<TSuccess> codeBlock)
-        {
-            try
-            {
-                return codeBlock();
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-        }
-    }
-    public class Result<TSuccess> : Result<Exception, TSuccess>
-    {
-        public Result(OneOf<Error<Exception>, Success<TSuccess>> _) : base(_) { }
-        public static implicit operator Result<TSuccess>(Error<Exception> _) => new Result<TSuccess>(_);
-        public static implicit operator Result<TSuccess>(Success<TSuccess> _) => new Result<TSuccess>(_);
-        public static implicit operator Result<TSuccess>(TSuccess value) => new Success<TSuccess>(value);
-        public static implicit operator Result<TSuccess>(Exception value) => new Error<Exception>(value);
-    }
-
     public class Result<TError, TSuccess> : OneOfBase<Error<TError>, Success<TSuccess>>
     {
         public Result(OneOf<Error<TError>, Success<TSuccess>> _) : base(_) { }
@@ -43,19 +20,19 @@ namespace OneOf.Monads
         public TError ErrorValue() => IsError() ? this.AsT0.Value : throw new NullReferenceException();
         public TSuccess SuccessValue() => IsSuccess() ? this.AsT1.Value : throw new NullReferenceException();
 
-        public Result<TError, TOut> AndThen<TOut>(Func<TSuccess, Result<TError, TOut>> andThen)
+        public Result<TError, TOut> Bind<TOut>(Func<TSuccess, Result<TError, TOut>> binder)
             => Match(
                 error => Result<TError, TOut>.Error(error.Value),
-                success => andThen(success.Value));
+                success => binder(success.Value));
 
-        public Result<TNewError, TNewSuccess> AndThen<TNewError, TNewSuccess>(
+        public Result<TNewError, TNewSuccess> Bind<TNewError, TNewSuccess>(
             Func<TError, TNewError> mapError,
-            Func<TSuccess, Result<TNewError, TNewSuccess>> andThen)
+            Func<TSuccess, Result<TNewError, TNewSuccess>> binder)
             => Match(
                 error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
-                success => andThen(success.Value));
+                success => binder(success.Value));
 
-        public TSuccess GetOrElse(Func<TError, TSuccess> fallback)
+        public TSuccess Unwrap(Func<TError, TSuccess> fallback)
             => Match(
                 error => fallback(error.Value),
                 success => success.Value);

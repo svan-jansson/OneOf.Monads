@@ -108,11 +108,11 @@ public void Use_filter_to_create_a_conditional_pipeline()
 
 ## The Result Monad
 
-The `Result<TError, TSuccess>` monad is similar to the `Option<T>` monad, but it also defines a value for the negative case, expressed as `TError`. Instead of the `Bind` function, it uses the control flow semantic `AndThen`. It also has the `GetOrElse` function that is used to define a fallback value for a pipeline. This monad is inspired by [kotlin-result](https://github.com/michaelbull/kotlin-result/) and provides readable data transformation pipelines and monadic error handling.
+The `Result<TError, TSuccess>` monad is similar to the `Option<T>` monad, but it also defines a value for the negative case, expressed as `TError`. It also has the `Unwrap` function that will return the encapsulated value or a provdided fallback. This monad can help you create readable data transformation pipelines and monadic error handling.
 
-### Result.AndThen Example
+### Result.Bind Example
 
-Here is an example of a control flow that uses `AndThen` in combination with `Map` and `Switch`. `AndThen` can be chained and will not execute if the previous step returns the error case `Error<TError>`.
+Here is an example of a control flow that uses `Bind` in combination with `Map` and `Switch`. `Bind` can be chained and will not execute if the previous step returns the error case `Error<TError>`.
 
 ```csharp
 const string ErrorMessage = "division by zero";
@@ -129,7 +129,7 @@ public void Success_and_error_both_have_values()
 
     Action<int> doMath = (divideBy)
         => Divide(12, divideBy)
-            .AndThen(result => Divide(result, 2))
+            .Bind(result => Divide(result, 2))
             .Map(result => result * 2)
             .Switch(
                 error => throw new DivideByZeroException(error.Value),
@@ -143,13 +143,13 @@ public void Success_and_error_both_have_values()
 }
 ```
 
-### Result.GetOrElse Example
+### Result.Unwrap Example
 
 This example demonstrates both how to define a fallback function and how to use the `TError` value, to provide logic on failure.
 
 ```csharp
 [Fact]
-public void GetOrElse_lets_you_define_fallback_values()
+public void Unwrap_lets_you_define_fallback_values()
 {
     var maxLimitException = new Exception();
     maxLimitException.Data.Add("max", 25);
@@ -162,13 +162,33 @@ public void GetOrElse_lets_you_define_fallback_values()
 
     Func<int, int> add10ReturnMax25 = (start)
         => Result<Exception, int>.Success(start)
-            .AndThen(add5)
-            .AndThen(add5)
-            .AndThen(checkIsBelow25)
-            .GetOrElse(exception => (int)exception.Data["max"]);
+            .Bind(add5)
+            .Bind(add5)
+            .Bind(checkIsBelow25)
+            .Unwrap(exception => (int)exception.Data["max"]);
 
     Assert.Equal(20, add10ReturnMax25(10));
     Assert.Equal(25, add10ReturnMax25(15));
     Assert.Equal(25, add10ReturnMax25(20));
+}
+```
+
+## The Try Monad
+
+The `Try<TSuccess>` monad implements `Result<Exception, TSuccess>` together with a `Catching` constructor.
+
+```csharp
+public void Try_can_wrap_caught_exceptions()
+{
+    Try.Catching<string>(() =>
+        {
+            throw new Exception("Error that should be caught");
+        })
+        .DoIfError((actual) => Assert.IsType<Exception>(actual))
+        .Do((_) => Assert.False(true));
+
+    Try.Catching(() => "a string")
+        .DoIfError((_) => Assert.True(false))
+        .Do((actual) => Assert.Equal("a string", actual));
 }
 ```

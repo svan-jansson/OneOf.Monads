@@ -21,12 +21,12 @@ static void WhichTeamWon(string leagueId, int season)
 {
     var result = Result<LookupError, Query>
                     .Success(new Query(leagueId, season))
-                    .AndThen(GetLeague)
-                    .AndThen(GetSeason)
-                    .AndThen(GetParticipants)
-                    .AndThen(GetWinner)
+                    .Bind(GetLeague)
+                    .Bind(GetSeason)
+                    .Bind(GetParticipants)
+                    .Bind(GetWinner)
                     .Map(winner => winner.Name)
-                    .GetOrElse(error => error.Reason);
+                    .Unwrap(error => error.Reason);
 
     Console.WriteLine($"Winner of {season} {leagueId} is:");
     Console.WriteLine(result);

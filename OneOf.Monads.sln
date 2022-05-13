@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{A192B4D5-FC57-42B0-9149-71907494D917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "option-examples", "examples\option-examples\option-examples.csproj", "{66895677-3E9A-4219-852E-37A3BDC17EAC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,8 +38,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FB4527D-B0EF-4708-9E1D-6DAF5699CB0F}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{66895677-3E9A-4219-852E-37A3BDC17EAC} = {A192B4D5-FC57-42B0-9149-71907494D917}
 	EndGlobalSection
 EndGlobal
