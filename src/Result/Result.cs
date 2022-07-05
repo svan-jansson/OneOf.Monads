@@ -32,17 +32,18 @@ namespace OneOf.Monads
                 error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
                 success => binder(success.Value));
 
-        public TSuccess Unwrap(Func<TError, TSuccess> fallback)
-            => Match(
-                error => fallback(error.Value),
-                success => success.Value);
 
         public Result<TError, TOut> Map<TOut>(Func<TSuccess, TOut> mapSuccess)
             => Match(
                 error => Result<TError, TOut>.Error(error.Value),
                 success => Result<TError, TOut>.Success(mapSuccess(success.Value)));
 
-        public Result<TNewError, TNewSuccess> Map<TNewError, TNewSuccess>(
+        public Result<TOut, TSuccess> MapError<TOut>(Func<TError, TOut> mapError)
+            => Match(
+                error => Result<TOut, TSuccess>.Error(mapError(error.Value)),
+                success => Result<TOut, TSuccess>.Success(success.Value));
+
+        public Result<TNewError, TNewSuccess> MapBoth<TNewError, TNewSuccess>(
             Func<TError, TNewError> mapError,
             Func<TSuccess, TNewSuccess> mapSuccess)
             => Match(
@@ -77,6 +78,219 @@ namespace OneOf.Monads
             }
 
             return this;
+        }
+
+        /// <summary>
+        /// Get the value of <c>TSuccess</c> or a default value from the supplied function.
+        /// </summary>
+        public TSuccess DefaultWith(Func<TError, TSuccess> fallback)
+            => Match(
+                error => fallback(error.Value),
+                success => success.Value);
+
+        /// <summary>
+        /// Fold into value of type <c>TOut</c> with supplied functions for case <c>TError</c> and case <c>TSuccess</c>.
+        /// </summary>
+        public TOut Fold<TOut>(Func<TError, TOut> caseError, Func<TSuccess, TOut> caseSuccess)
+            => Match(
+                error => caseError(error.Value),
+                success => caseSuccess(success.Value));
+
+        /// <summary>
+        /// Combine several results into a new result of <c>TSuccessOut</c> or <c>TError</c> if any of the provided results has an error
+        /// </summary>
+        public Result<TError, TSuccessOut> Zip<TSuccessOut, TSuccessOther>(
+            Result<TError, TSuccessOther> other,
+            Func<TSuccess, TSuccessOther, TSuccessOut> combine)
+        {
+            TError error = default;
+            bool allSuccess = false;
+
+            if (this.IsSuccess())
+            {
+                allSuccess = true;
+            }
+            else
+            {
+                error = this.ErrorValue();
+            }
+
+            if (allSuccess && !other.IsSuccess())
+            {
+                error = other.ErrorValue();
+                allSuccess = false;
+            }
+
+
+            if (allSuccess)
+            {
+                return combine(this.SuccessValue(), other.SuccessValue());
+            }
+
+            return Result<TError, TSuccessOut>.Error(error);
+        }
+
+        /// <summary>
+        /// Combine several results into a new result of <c>TSuccessOut</c> or <c>TError</c> if any of the provided results has an error
+        /// </summary>
+        public Result<TError, TSuccessOut> Zip<TSuccessOut, TSuccessFirstOther, TSuccessSecondOther>(
+            Result<TError, TSuccessFirstOther> firstOther,
+            Result<TError, TSuccessSecondOther> secondOther,
+            Func<TSuccess, TSuccessFirstOther, TSuccessSecondOther, TSuccessOut> combine)
+        {
+            TError error = default;
+            bool allSuccess = false;
+
+            if (this.IsSuccess())
+            {
+                allSuccess = true;
+            }
+            else
+            {
+                error = this.ErrorValue();
+            }
+
+            if (allSuccess && !firstOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = firstOther.ErrorValue();
+            }
+
+            if (allSuccess && !secondOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = secondOther.ErrorValue();
+            }
+
+
+            if (allSuccess)
+            {
+                return combine(this.SuccessValue(), firstOther.SuccessValue(), secondOther.SuccessValue());
+            }
+
+            return Result<TError, TSuccessOut>.Error(error);
+        }
+
+        /// <summary>
+        /// Combine several results into a new result of <c>TSuccessOut</c> or <c>TError</c> if any of the provided results has an error
+        /// </summary>
+        public Result<TError, TSuccessOut> Zip<TSuccessOut, TSuccessFirstOther, TSuccessSecondOther, TSuccessThirdOther>(
+            Result<TError, TSuccessFirstOther> firstOther,
+            Result<TError, TSuccessSecondOther> secondOther,
+            Result<TError, TSuccessThirdOther> thirdOther,
+            Func<TSuccess, TSuccessFirstOther, TSuccessSecondOther, TSuccessThirdOther, TSuccessOut> combine)
+        {
+            TError error = default;
+            bool allSuccess = false;
+
+            if (this.IsSuccess())
+            {
+                allSuccess = true;
+            }
+            else
+            {
+                error = this.ErrorValue();
+            }
+
+            if (allSuccess && !firstOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = firstOther.ErrorValue();
+            }
+
+            if (allSuccess && !secondOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = secondOther.ErrorValue();
+            }
+
+            if (allSuccess && !thirdOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = thirdOther.ErrorValue();
+            }
+
+
+            if (allSuccess)
+            {
+                return combine(
+                    this.SuccessValue(),
+                    firstOther.SuccessValue(),
+                    secondOther.SuccessValue(),
+                    thirdOther.SuccessValue());
+            }
+
+            return Result<TError, TSuccessOut>.Error(error);
+        }
+
+        /// <summary>
+        /// Combine several results into a new result of <c>TSuccessOut</c> or <c>TError</c> if any of the provided results has an error
+        /// </summary>
+        public Result<TError, TSuccessOut> Zip<
+            TSuccessOut,
+            TSuccessFirstOther,
+            TSuccessSecondOther,
+            TSuccessThirdOther,
+            TSuccessFourthOther>(
+            Result<TError, TSuccessFirstOther> firstOther,
+            Result<TError, TSuccessSecondOther> secondOther,
+            Result<TError, TSuccessThirdOther> thirdOther,
+            Result<TError, TSuccessFourthOther> fourthOther,
+            Func<
+                TSuccess,
+                TSuccessFirstOther,
+                TSuccessSecondOther,
+                TSuccessThirdOther,
+                TSuccessFourthOther,
+                TSuccessOut> combine)
+        {
+            TError error = default;
+            bool allSuccess = false;
+
+            if (this.IsSuccess())
+            {
+                allSuccess = true;
+            }
+            else
+            {
+                error = this.ErrorValue();
+            }
+
+            if (allSuccess && !firstOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = firstOther.ErrorValue();
+            }
+
+            if (allSuccess && !secondOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = secondOther.ErrorValue();
+            }
+
+            if (allSuccess && !thirdOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = thirdOther.ErrorValue();
+            }
+
+            if (allSuccess && !fourthOther.IsSuccess())
+            {
+                allSuccess = false;
+                error = fourthOther.ErrorValue();
+            }
+
+            if (allSuccess)
+            {
+                return combine(
+                    this.SuccessValue(),
+                    firstOther.SuccessValue(),
+                    secondOther.SuccessValue(),
+                    thirdOther.SuccessValue(),
+                    fourthOther.SuccessValue());
+            }
+
+            return Result<TError, TSuccessOut>.Error(error);
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace OneOf.Monads.UnitTests
         }
 
         [Fact]
-        public void Unwrap_lets_you_define_fallback_values()
+        public void DefaultWith_lets_you_define_fallback_values()
         {
             var maxLimitException = new Exception();
             maxLimitException.Data.Add("max", 25);
@@ -66,7 +66,7 @@ namespace OneOf.Monads.UnitTests
                     .Bind(add5)
                     .Bind(add5)
                     .Bind(checkIsBelow25)
-                    .Unwrap(exception => (int)exception.Data["max"]);
+                    .DefaultWith(exception => (int)exception.Data["max"]);
 
             Assert.Equal(20, add10ReturnMax25(10));
             Assert.Equal(25, add10ReturnMax25(15));
@@ -105,6 +105,95 @@ namespace OneOf.Monads.UnitTests
             result.ToOption().Switch(
                 none => Assert.True(false, "this should not be executed"),
                 some => Assert.Equal(5, some.Value));
+        }
+
+        [Fact]
+        public void Result_can_be_folded_into_a_single_value()
+        {
+            Result<Exception, int> result = 5;
+
+            var actual = result
+                .Fold(
+                    error => 0,
+                    success => success * 2);
+
+            Assert.Equal(10, actual);
+        }
+
+        [Fact]
+        public void Combine_results_with_zip_all_are_success()
+        {
+            Result<Exception, int> result1 = 5;
+            Result<Exception, int> result2 = 8;
+            var expected = 13;
+
+            var actual = result1
+                .Zip(result2, (value1, value2) => value1 + value2)
+                .DefaultWith((_) => 0);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Combine_results_with_zip_when_errors_exist()
+        {
+            Result<Exception, int> result1 = 5;
+            Result<Exception, int> result2 = new Exception("an error");
+            var expected = "this should happen";
+
+            var actual = result1
+                .Zip(result2, (value1, value2) => "this should not happen")
+                .DefaultWith((_) => "this should happen");
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Combine_five_results_with_zip_all_are_success()
+        {
+            Result<Exception, int> result1 = 1;
+            Result<Exception, int> result2 = 2;
+            Result<Exception, int> result3 = 3;
+            Result<Exception, int> result4 = 4;
+            Result<Exception, int> result5 = 5;
+
+            var expected = 1 + 2 + 3 + 4 + 5;
+
+            var actual = result1
+                .Zip(
+                    result2,
+                    result3,
+                    result4,
+                    result5,
+                    (value1, value2, value3, value4, value5)
+                        => value1 + value2 + value3 + value4 + value5)
+                .DefaultWith((_) => 0);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Zip_returns_the_first_encountered_error()
+        {
+            Result<string, int> result1 = 1;
+            Result<string, int> result2 = "first error";
+            Result<string, int> result3 = 3;
+            Result<string, int> result4 = "second error";
+            Result<string, int> result5 = 5;
+
+            var expected = "first error";
+
+            var actual = result1
+                .Zip(
+                    result2,
+                    result3,
+                    result4,
+                    result5,
+                    (value1, value2, value3, value4, value5)
+                        => value1 + value2 + value3 + value4 + value5)
+                .ErrorValue();
+
+            Assert.Equal(expected, actual);
         }
     }
 }

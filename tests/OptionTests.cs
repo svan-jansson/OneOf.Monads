@@ -40,9 +40,9 @@ namespace OneOf.Monads.UnitTest
             var actual = option
                             .Bind(IsGreaterThan10)
                             .Bind(IsEven)
-                            .Match(
-                                none => 0,
-                                some => some.Value);
+                            .Fold(
+                                () => 0,
+                                some => some);
 
             Assert.Equal(expected, actual);
         }
@@ -58,9 +58,9 @@ namespace OneOf.Monads.UnitTest
                 .Bind(i => i > 2
                     ? Option<string>.Some("above two")
                     : Option<string>.None())
-                .Match(
-                    none => "below or equal to two",
-                    some => some.Value);
+                .Fold(
+                    () => "below or equal to two",
+                    some => some);
 
             Assert.Equal(expected, actual);
 
@@ -77,9 +77,9 @@ namespace OneOf.Monads.UnitTest
             var actual = option
                             .Bind(IsGreaterThan10)
                             .Bind(IsEven)
-                            .Match(
-                                none => 0,
-                                some => some.Value);
+                            .Fold(
+                                () => 0,
+                                some => some);
 
             Assert.Equal(expected, actual);
         }
@@ -95,9 +95,9 @@ namespace OneOf.Monads.UnitTest
                             .Bind(IsEven)
                             .Map(i => i.ToString())
                             .Map(s => $"~{s}~")
-                            .Match(
-                                none => "could not convert number",
-                                some => some.Value);
+                            .Fold(
+                                () => "could not convert number",
+                                some => some);
 
             Assert.Equal(expected, actual);
         }
@@ -113,9 +113,9 @@ namespace OneOf.Monads.UnitTest
                             .Bind(IsEven)
                             .Map(i => i.ToString())
                             .Map(s => $"~{s}~")
-                            .Match(
-                                none => "could not convert number",
-                                some => some.Value);
+                            .Fold(
+                                () => "could not convert number",
+                                some => some);
 
             Assert.Equal(expected, actual);
         }
@@ -196,6 +196,58 @@ namespace OneOf.Monads.UnitTest
                 .Switch(
                     none => Assert.True(false, "should not be None"),
                     some => Assert.True(true, "should be Some<TestClass>"));
+        }
+
+        [Fact]
+        public void Combine_options_with_zip_all_are_some()
+        {
+            var option1 = 5.ToOption();
+            var option2 = 8.ToOption();
+            var expected = 13;
+
+            var actual = option1
+                .Zip(option2, (value1, value2) => value1 + value2)
+                .DefaultWith(() => 0);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Combine_options_with_zip_when_none()
+        {
+            var option1 = 5.ToOption();
+            var option2 = Option<string>.None();
+            var expected = "this should happen";
+
+            var actual = option1
+                .Zip(option2, (value1, value2) => "this should not happen")
+                .DefaultWith(() => "this should happen");
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Combine_five_options_with_zip_all_are_some()
+        {
+            var option1 = 1.ToOption();
+            var option2 = 2.ToOption();
+            var option3 = 3.ToOption();
+            var option4 = 4.ToOption();
+            var option5 = 5.ToOption();
+
+            var expected = 1 + 2 + 3 + 4 + 5;
+
+            var actual = option1
+                .Zip(
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    (value1, value2, value3, value4, value5) 
+                        => value1 + value2 + value3 + value4 + value5)
+                .DefaultWith(() => 0);
+
+            Assert.Equal(expected, actual);
         }
 
         class TestClass

@@ -143,13 +143,13 @@ public void Success_and_error_both_have_values()
 }
 ```
 
-### Result.Unwrap Example
+### Result.DefaultWith Example
 
 This example demonstrates both how to define a fallback function and how to use the `TError` value, to provide logic on failure.
 
 ```csharp
 [Fact]
-public void Unwrap_lets_you_define_fallback_values()
+public void DefaultWith_lets_you_define_fallback_values()
 {
     var maxLimitException = new Exception();
     maxLimitException.Data.Add("max", 25);
@@ -165,7 +165,7 @@ public void Unwrap_lets_you_define_fallback_values()
             .Bind(add5)
             .Bind(add5)
             .Bind(checkIsBelow25)
-            .Unwrap(exception => (int)exception.Data["max"]);
+            .DefaultWith(exception => (int)exception.Data["max"]);
 
     Assert.Equal(20, add10ReturnMax25(10));
     Assert.Equal(25, add10ReturnMax25(15));

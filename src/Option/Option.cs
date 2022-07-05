@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace OneOf.Monads
 {
@@ -99,6 +100,102 @@ namespace OneOf.Monads
             }
 
             return this;
+        }
+
+        /// <summary>
+        /// Fold into value of type <c>TOut</c> with supplied functions for case <c>None</c> and case <c>Some</c>.
+        /// </summary>
+        public TOut Fold<TOut>(Func<TOut> caseNone, Func<T, TOut> caseSome)
+            => Match(
+                _none => caseNone(),
+                some => caseSome(some.Value));
+
+        /// <summary>
+        /// Get the value of <c>Some</c> or a default value from the supplied function.
+        /// </summary>
+        public T DefaultWith(Func<T> defaultNone)
+            => Match(
+                _none => defaultNone(),
+                some => some.Value);
+
+        /// <summary>
+        /// Combine several options into a new option or <c>None</c> if any of the provided options are <c>None</c>
+        /// </summary>
+        public Option<TOut> Zip<TOut, TOther>(Option<TOther> other, Func<T, TOther, TOut> combine)
+        {
+            if (this.IsSome() && other.IsSome())
+            {
+                return combine(this.Value(), other.Value());
+            }
+
+            return Option<TOut>.None();
+        }
+
+        /// <summary>
+        /// Combine several options into a new option or <c>None</c> if any of the provided options are <c>None</c>
+        /// </summary>
+        public Option<TOut> Zip<TOut, TFirstOther, TSecondOther>(
+            Option<TFirstOther> firstOther,
+            Option<TSecondOther> secondOther,
+            Func<T, TFirstOther, TSecondOther, TOut> combine)
+        {
+            if (this.IsSome() && firstOther.IsSome() && secondOther.IsSome())
+            {
+                return combine(this.Value(), firstOther.Value(), secondOther.Value());
+            }
+
+            return Option<TOut>.None();
+        }
+
+        /// <summary>
+        /// Combine several options into a new option or <c>None</c> if any of the provided options are <c>None</c>
+        /// </summary>
+        public Option<TOut> Zip<TOut, TFirstOther, TSecondOther, TThirdOther>(
+            Option<TFirstOther> firstOther,
+            Option<TSecondOther> secondOther,
+            Option<TThirdOther> thirdOther,
+            Func<T, TFirstOther, TSecondOther, TThirdOther, TOut> combine)
+        {
+            if (this.IsSome() 
+                && firstOther.IsSome() 
+                && secondOther.IsSome()
+                && thirdOther.IsSome())
+            {
+                return combine(
+                    this.Value(),
+                    firstOther.Value(),
+                    secondOther.Value(),
+                    thirdOther.Value());
+            }
+
+            return Option<TOut>.None();
+        }
+
+        /// <summary>
+        /// Combine several options into a new option or <c>None</c> if any of the provided options are <c>None</c>
+        /// </summary>
+        public Option<TOut> Zip<TOut, TFirstOther, TSecondOther, TThirdOther, TFourthOther>(
+            Option<TFirstOther> firstOther,
+            Option<TSecondOther> secondOther,
+            Option<TThirdOther> thirdOther,
+            Option<TFourthOther> fourthOther,
+            Func<T, TFirstOther, TSecondOther, TThirdOther, TFourthOther, TOut> combine)
+        {
+            if (this.IsSome()
+                && firstOther.IsSome()
+                && secondOther.IsSome()
+                && thirdOther.IsSome()
+                && fourthOther.IsSome())
+            {
+                return combine(
+                    this.Value(),
+                    firstOther.Value(),
+                    secondOther.Value(),
+                    thirdOther.Value(),
+                    fourthOther.Value());
+            }
+
+            return Option<TOut>.None();
         }
     }
 }
