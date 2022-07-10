@@ -196,6 +196,6 @@ namespace OneOf.Monads
             }
 
             return Option<TOut>.None();
-        }
+        }   
     }
 }

@@ -25,13 +25,10 @@ namespace OneOf.Monads
                 error => Result<TError, TOut>.Error(error.Value),
                 success => binder(success.Value));
 
-        public Result<TNewError, TNewSuccess> Bind<TNewError, TNewSuccess>(
-            Func<TError, TNewError> mapError,
-            Func<TSuccess, Result<TNewError, TNewSuccess>> binder)
+        public Result<TOut, TSuccess> BindError<TOut>(Func<TError, Result<TOut, TSuccess>> binder)
             => Match(
-                error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
-                success => binder(success.Value));
-
+                error => binder(error.Value),
+                success => Result<TOut, TSuccess>.Success(success.Value));
 
         public Result<TError, TOut> Map<TOut>(Func<TSuccess, TOut> mapSuccess)
             => Match(
@@ -42,13 +39,6 @@ namespace OneOf.Monads
             => Match(
                 error => Result<TOut, TSuccess>.Error(mapError(error.Value)),
                 success => Result<TOut, TSuccess>.Success(success.Value));
-
-        public Result<TNewError, TNewSuccess> MapBoth<TNewError, TNewSuccess>(
-            Func<TError, TNewError> mapError,
-            Func<TSuccess, TNewSuccess> mapSuccess)
-            => Match(
-                error => Result<TNewError, TNewSuccess>.Error(mapError(error.Value)),
-                success => Result<TNewError, TNewSuccess>.Success(mapSuccess(success.Value)));
 
         /// <summary>
         /// Do let's you fire and forget an action that is executed only when the value is <see cref="TSuccess"/> 

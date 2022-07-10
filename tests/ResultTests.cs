@@ -195,5 +195,20 @@ namespace OneOf.Monads.UnitTests
 
             Assert.Equal(expected, actual);
         }
+
+        [Fact]
+        public void Merge_can_combine_results()
+        {
+            var result = Result<string, int>.Success(10)
+                .Merge(Result<string, int>.Success(20))
+                .Merge(Result<string, int>.Success(30))
+                .Merge(Result<string, int>.Success(40))
+                .Merge(Result<string, int>.Success(50))
+                .Fold(
+                    (error) => 0,
+                    (group) => group.Item1 + group.Item2 + group.Item3 + group.Item4 + group.Item5);
+
+            Assert.Equal(150, result);
+        }
     }
 }

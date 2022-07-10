@@ -250,6 +250,21 @@ namespace OneOf.Monads.UnitTest
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Merge_can_combine_options()
+        {
+            var result = 10.ToOption()
+                .Merge(20.ToOption())
+                .Merge(30.ToOption())
+                .Merge(40.ToOption())
+                .Merge(50.ToOption())
+                .Fold(
+                    () => 0,
+                    (group) => group.Item1 + group.Item2 + group.Item3 + group.Item4 + group.Item5);
+
+            Assert.Equal(150, result);
+        }
+
         class TestClass
         {
 
