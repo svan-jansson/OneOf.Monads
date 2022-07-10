@@ -19,7 +19,10 @@ namespace OneOf.Monads.UnitTests
 
             Try.Catching(() => "a string")
                 .DoIfError((_) => Assert.True(false))
-                .Do((actual) => Assert.Equal("a string", actual));
+                .Do((actual) => Assert.Equal("a string", actual))
+                .MapCatching<string>((value) => throw new ArgumentException("This failed"))
+                .DoIfError((exception) => Assert.IsType<ArgumentException>(exception))
+                .Do((value) => Assert.True(false));
         }
     }
 }
