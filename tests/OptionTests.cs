@@ -199,7 +199,7 @@ namespace OneOf.Monads.UnitTest
         }
 
         [Fact]
-        public void Combine_options_with_zip_all_are_some()
+        public void Combine_options_with_zip_when_all_are_some()
         {
             var option1 = 5.ToOption();
             var option2 = 8.ToOption();
@@ -227,7 +227,7 @@ namespace OneOf.Monads.UnitTest
         }
 
         [Fact]
-        public void Combine_five_options_with_zip_all_are_some()
+        public void Combine_five_options_with_zip_when_all_are_some()
         {
             var option1 = 1.ToOption();
             var option2 = 2.ToOption();
@@ -243,7 +243,7 @@ namespace OneOf.Monads.UnitTest
                     option3,
                     option4,
                     option5,
-                    (value1, value2, value3, value4, value5) 
+                    (value1, value2, value3, value4, value5)
                         => value1 + value2 + value3 + value4 + value5)
                 .DefaultWith(() => 0);
 
@@ -253,6 +253,8 @@ namespace OneOf.Monads.UnitTest
         [Fact]
         public void Merge_can_combine_options()
         {
+            var expected = 10 + 20 + 30 + 40 + 50;
+
             var result = 10.ToOption()
                 .Merge(20.ToOption())
                 .Merge(30.ToOption())
@@ -262,7 +264,25 @@ namespace OneOf.Monads.UnitTest
                     () => 0,
                     (group) => group.Item1 + group.Item2 + group.Item3 + group.Item4 + group.Item5);
 
-            Assert.Equal(150, result);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void ToResult_converts_an_option_to_a_successful_result()
+        {
+            var option = Option<int>.Some(111);
+            var result = option.ToResult(() => new System.Exception("hello"));
+
+            Assert.Equal(111, result.SuccessValue());
+        }
+
+        [Fact]
+        public void ToResult_converts_an_option_to_an_error_result()
+        {
+            var option = Option<int>.None();
+            var result = option.ToResult(() => new System.Exception("hello"));
+
+            Assert.Equal("hello", result.ErrorValue().Message);
         }
 
         class TestClass

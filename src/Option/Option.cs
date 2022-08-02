@@ -156,8 +156,8 @@ namespace OneOf.Monads
             Option<TThirdOther> thirdOther,
             Func<T, TFirstOther, TSecondOther, TThirdOther, TOut> combine)
         {
-            if (this.IsSome() 
-                && firstOther.IsSome() 
+            if (this.IsSome()
+                && firstOther.IsSome()
                 && secondOther.IsSome()
                 && thirdOther.IsSome())
             {
@@ -196,6 +196,16 @@ namespace OneOf.Monads
             }
 
             return Option<TOut>.None();
-        }   
+        }
+
+        /// <summary>
+        /// Create a <c>Result<TError, T></c> from an Option<T> by supplying a mapper for the error case
+        /// </summary>
+
+        public Result<TError, T> ToResult<TError>(Func<TError> defaultError)
+         => this.Fold<Result<TError, T>>(
+                () => defaultError(),
+                (value) => value
+            );
     }
 }
