@@ -210,5 +210,52 @@ namespace OneOf.Monads.UnitTests
 
             Assert.Equal(150, result);
         }
+
+        [Fact]
+        public void Pattern_using_OneOf_as_error_type()
+        {
+            Result<CustomerError, Customer> ValidateEmail(Customer customer)
+            {
+                if (customer.Email.Contains("@")) return customer;
+                else return new CustomerError(new InvalidEmail());
+            }
+
+            Result<CustomerError, Customer> ValidatePhoneNumber(Customer customer)
+            {
+                if (customer.PhoneNumber.Contains("+")) return customer;
+                else return new CustomerError(new InvalidPhoneNumber());
+            }
+
+            var input = new Customer() { Email = "valid@email.com", PhoneNumber = "invalid" };
+
+            var expected = "invalid phone number";
+
+            var actual = ValidateEmail(input)
+                .Bind(ValidatePhoneNumber)
+                .Map(customer => $"valid customer: ${customer.Email} - ${customer.PhoneNumber}")
+                .MapError(error => error.Match(
+                    invalidEmail => "invalid email",
+                    invalidPhoneNumber => "invalid phone number"
+                ));
+
+            Assert.Equal(expected, actual.ErrorValue());
+        }
+
+        class Customer
+        {
+            public string Email { get; set; }
+            public string PhoneNumber { get; set; }
+        }
+
+        class InvalidEmail { }
+        class InvalidPhoneNumber { }
+
+        class CustomerError : OneOfBase<InvalidEmail, InvalidPhoneNumber>
+        {
+            public CustomerError(OneOf<InvalidEmail, InvalidPhoneNumber> input) : base(input)
+            {
+            }
+        }
+
     }
 }
