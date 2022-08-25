@@ -19,14 +19,12 @@ WhichTeamWon("invalid league id", 2020);
 
 static void WhichTeamWon(string leagueId, int season)
 {
-    var result = Result<LookupError, Query>
-                    .Success(new Query(leagueId, season))
-                    .Bind(GetLeague)
+    var result = GetLeague(new Query(leagueId, season))
                     .Bind(GetSeason)
                     .Bind(GetParticipants)
                     .Bind(GetWinner)
                     .Map(winner => winner.Name)
-                    .Unwrap(error => error.Reason);
+                    .DefaultWith(error => error.Reason);
 
     Console.WriteLine($"Winner of {season} {leagueId} is:");
     Console.WriteLine(result);

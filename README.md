@@ -14,6 +14,7 @@ dotnet add package OneOf.Monads
 
 - [Using the Option monad to manipulate a stream of integers](examples/option-examples/Program.cs)
 - [Using the Result monad to compose data from different API calls](examples/result-examples/Program.cs)
+- [Using the Result monad with a OneOf type as error](examples/esoteric-examples/Program.cs)
 
 ## The Option Monad
 
