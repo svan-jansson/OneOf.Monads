@@ -23,8 +23,8 @@ namespace OneOf.Monads
         public Try(OneOf<Error<Exception>, Success<TSuccess>> _) : base(_) { }
         public static implicit operator Try<TSuccess>(Error<Exception> _) => new Try<TSuccess>(_);
         public static implicit operator Try<TSuccess>(Success<TSuccess> _) => new Try<TSuccess>(_);
-        public static implicit operator Try<TSuccess>(TSuccess value) => new Success<TSuccess>(value);
-        public static implicit operator Try<TSuccess>(Exception value) => new Error<Exception>(value);
+        public static implicit operator Try<TSuccess>(TSuccess _) => new Success<TSuccess>(_);
+        public static implicit operator Try<TSuccess>(Exception _) => new Error<Exception>(_);
 
         public Result<Exception, TSuccess> ToResult() => this;
 
@@ -34,24 +34,11 @@ namespace OneOf.Monads
                  success => Try.Catching(() => mapper(success)));
 
         public Try<TOut> Bind<TOut>(Func<TSuccess, Try<TOut>> binder)
-            => Match(
-                error => Result<Exception, TOut>.Error(error.Value) as Try<TOut>,
-                success => binder(success.Value));
+            => base.Bind<TOut>(binder) as Try<TOut>;
 
-        public Try<TSuccess> BindError(Func<Exception, Try<TSuccess>> binder)
-            => Match(
-                error => binder(error.Value),
-                success => Success(success.Value) as Try<TSuccess>);
+        public new Try<TOut> Map<TOut>(Func<TSuccess, TOut> mapper)
+            => base.Map<TOut>(mapper) as Try<TOut>;
 
-        public new Try<TOut> Map<TOut>(Func<TSuccess, TOut> mapSuccess)
-            => Match(
-                error => Result<Exception, TOut>.Error(error.Value) as Try<TOut>,
-                success => Result<Exception, TOut>.Success(mapSuccess(success.Value)) as Try<TOut>);
-
-        public Try<TSuccess> MapError(Func<Exception, Exception> mapError)
-            => Match(
-                error => Error(mapError(error.Value)) as Try<TSuccess>,
-                success => Success(success.Value) as Try<TSuccess>);
 
         /// <summary>
         /// Do let's you fire and forget an action that is executed only when the value is <see cref="TSuccess"/> 
@@ -59,14 +46,7 @@ namespace OneOf.Monads
         /// <param name="do">An action that takes a single parameter of <see cref="TSuccess"/></param>
         /// <returns>The current state of the Result</returns>
         public new Try<TSuccess> Do(Action<TSuccess> @do)
-        {
-            if (IsSuccess())
-            {
-                @do(this.SuccessValue());
-            }
-
-            return this;
-        }
+            => base.Do(@do) as Try<TSuccess>;
 
         /// <summary>
         /// Do let's you fire and forget an action that is executed only when the value is <see cref="TError"/> 
@@ -74,14 +54,7 @@ namespace OneOf.Monads
         /// <param name="do">An action that takes a single parameter of <see cref="TError"/></param>
         /// <returns>The current state of the Result</returns>
         public new Try<TSuccess> DoIfError(Action<Exception> @do)
-        {
-            if (IsError())
-            {
-                @do(this.ErrorValue());
-            }
-
-            return this;
-        }
+            => base.DoIfError(@do) as Try<TSuccess>;
 
 
         /// <summary>
