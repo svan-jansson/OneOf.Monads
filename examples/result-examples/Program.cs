@@ -4,7 +4,7 @@ This example shows usage of the result monad in a scenario when composing data f
 Using real world football standings provided by Azhari Muhammad Marzan - https://github.com/azharimm/football-standings-api.
 */
 
-using OneOf.Monads;
+using Svan.Monads;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

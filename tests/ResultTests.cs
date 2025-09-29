@@ -1,9 +1,10 @@
 using Xunit;
-using OneOf.Monads;
+using Svan.Monads;
 using OneOf.Types;
+using OneOf;
 using System;
 
-namespace OneOf.Monads.UnitTests
+namespace Svan.Monads.UnitTests
 {
     public class ResultTests
     {
@@ -79,7 +80,7 @@ namespace OneOf.Monads.UnitTests
             Result<Exception, int> result = 5;
 
             result
-                .DoIfError(_ => Assert.True(false, "this should not be executed"))
+                .DoIfError(_ => Assert.Fail("this should not be executed"))
                 .Do(i => Assert.Equal(5, i));
         }
 
@@ -90,7 +91,7 @@ namespace OneOf.Monads.UnitTests
 
             result
                 .DoIfError(error => Assert.Equal("this is an error", error.Message))
-                .Do(i => Assert.True(false, "this should not be executed"));
+                .Do(i => Assert.Fail("this should not be executed"));
         }
 
         [Fact]
@@ -99,11 +100,11 @@ namespace OneOf.Monads.UnitTests
             Result<Exception, int> result = new Exception("this is an error");
             result.ToOption().Switch(
                 none => Assert.True(true, "Error should map to None"),
-                some => Assert.True(false, "this should not be executed"));
+                some => Assert.Fail("this should not be executed"));
 
             result = 5;
             result.ToOption().Switch(
-                none => Assert.True(false, "this should not be executed"),
+                none => Assert.Fail("this should not be executed"),
                 some => Assert.Equal(5, some.Value));
         }
 

@@ -1,7 +1,8 @@
 ﻿using System;
 using OneOf.Types;
+using OneOf;
 
-namespace OneOf.Monads
+namespace Svan.Monads
 {
     public class Result<TError, TSuccess> : OneOfBase<Error<TError>, Success<TSuccess>>
     {

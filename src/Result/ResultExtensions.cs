@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OneOf.Monads
+namespace Svan.Monads
 {
     public static class ResultExtensions
     {

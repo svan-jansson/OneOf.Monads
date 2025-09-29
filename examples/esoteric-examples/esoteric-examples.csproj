@@ -11,8 +11,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OneOf" Version="3.0.223" />
-    <PackageReference Include="OneOf.Monads" Version="1.18.0" />
-    <PackageReference Include="OneOf.SourceGenerator" Version="3.0.223" />
+    <PackageReference Include="Svan.Monads" Version="1.18.0" />
+    <PackageReference Include="Svan.SourceGenerator" Version="3.0.223" />
   </ItemGroup>
 
 </Project>

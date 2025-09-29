@@ -1,7 +1,7 @@
 using Xunit;
-using OneOf.Monads;
+using Svan.Monads;
 
-namespace OneOf.Monads.UnitTest
+namespace Svan.Monads.UnitTest
 {
     public class OptionTests
     {
@@ -152,7 +152,7 @@ namespace OneOf.Monads.UnitTest
             Option<int> option = 5;
 
             option
-                .DoIfNone(() => Assert.True(false, "this should not be executed"))
+                .DoIfNone(() => Assert.Fail("this should not be executed"))
                 .Do(i => Assert.Equal(5, i));
         }
 
@@ -162,7 +162,7 @@ namespace OneOf.Monads.UnitTest
             Option<int> option = new None();
 
             option
-                .Do(i => Assert.True(false, "this should not be executed"))
+                .Do(i => Assert.Fail("this should not be executed"))
                 .DoIfNone(() => Assert.True(true, "this should be executed"));
         }
 
@@ -172,13 +172,13 @@ namespace OneOf.Monads.UnitTest
             int i = default;
             i.ToOption()
                 .Switch(
-                    none => Assert.True(false, "should not be None"),
+                    none => Assert.Fail("should not be None"),
                     some => Assert.True(true, "should be Some<int>"));
 
             i = 5;
             i.ToOption()
                 .Switch(
-                    none => Assert.True(false, "should not be None"),
+                    none => Assert.Fail("should not be None"),
                     some => Assert.True(true, "should be Some<int>"));
         }
 
@@ -189,12 +189,12 @@ namespace OneOf.Monads.UnitTest
             t.ToOption()
                 .Switch(
                     none => Assert.True(true, "should be None"),
-                    some => Assert.True(false, "should not be Some<TestClass>"));
+                    some => Assert.Fail("should not be Some<TestClass>"));
 
             t = new TestClass();
             t.ToOption()
                 .Switch(
-                    none => Assert.True(false, "should not be None"),
+                    none => Assert.Fail("should not be None"),
                     some => Assert.True(true, "should be Some<TestClass>"));
         }
 

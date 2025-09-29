@@ -4,13 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
-    <PackageId>OneOf.Monads</PackageId>
+    <PackageId>Svan.Monads</PackageId>
     <Version Condition="'$(GITHUB_BUILD_NUMBER)' != ''">1.$(GITHUB_BUILD_NUMBER)</Version>
     <Version Condition="'$(GITHUB_BUILD_NUMBER)' == ''">1.0</Version>
     <Authors>Erik Svensson</Authors>
     <Copyright>Erik Svensson</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/svan-jansson/OneOf.Monads</RepositoryUrl>
+    <RepositoryUrl>https://github.com/svan-jansson/Svan.Monads</RepositoryUrl>
     <Description>This library adds common monads to the fantastic OneOf union type library.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

@@ -1,9 +1,9 @@
 using Xunit;
-using OneOf.Monads;
+using Svan.Monads;
 using OneOf.Types;
 using System;
 
-namespace OneOf.Monads.UnitTests
+namespace Svan.Monads.UnitTests
 {
     public class TryTests
     {

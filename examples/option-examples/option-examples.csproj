@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf.Monads" Version="1.*" />
+    <PackageReference Include="Svan.Monads" Version="1.*" />
   </ItemGroup>
 
 </Project>

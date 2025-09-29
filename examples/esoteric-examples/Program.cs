@@ -3,7 +3,7 @@ This example shows usage of the result monad in combination with the core OneOf 
 */
 
 using OneOf;
-using OneOf.Monads;
+using Svan.Monads;
 
 var inputs = new[]
 {

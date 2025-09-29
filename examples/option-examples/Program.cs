@@ -3,7 +3,7 @@ This example shows how to use the Option monad in a stream scenario.
 By building a pipeline with a set of conditions and then evaluating the results with Match.
 */
 
-using OneOf.Monads;
+using Svan.Monads;
 
 StreamOfIntegers(randomInteger =>
 {

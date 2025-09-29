@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using OneOf;
 
-namespace OneOf.Monads
+namespace Svan.Monads
 {
     /// <summary>
     /// Represents some value of type T

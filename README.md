@@ -1,13 +1,13 @@
-[![Build, Test & Publish](https://github.com/svan-jansson/OneOf.Monads/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/svan-jansson/OneOf.Monads/actions/workflows/build-test-publish.yml) [![Nuget](https://img.shields.io/nuget/v/OneOf.Monads)](https://www.nuget.org/packages/OneOf.Monads/)
+[![Build, Test & Publish](https://github.com/svan-jansson/Svan.Monads/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/svan-jansson/Svan.Monads/actions/workflows/build-test-publish.yml) [![Nuget](https://img.shields.io/nuget/v/Svan.Monads)](https://www.nuget.org/packages/Svan.Monads/)
 
 # Monads Based on the OneOf Union Type
 
-This library adds common monads to the fantastic [OneOf](https://github.com/mcintyre321/OneOf) union type library.
+This library adds common monads, currently based on the [OneOf](https://github.com/mcintyre321/OneOf) union type library.
 
 ## Installation
 
 ```bash
-dotnet add package OneOf.Monads
+dotnet add package Svan.Monads
 ```
 
 ## Code Examples
@@ -29,7 +29,7 @@ This monad provides a mechanism for conditional execution in a workflow/pipeline
 In this example we create a contract that guarantees that a given number is greater than 10 and is even. We then pipe the result into a `Match` to conditionally execute for both cases.
 
 ```csharp
-using OneOf.Monads
+using Svan.Monads
 
 Option<int> IsGreaterThan10(int i)
         => i > 10 ? i : new None();
@@ -61,7 +61,7 @@ void Conditional_execution_when_contract_is_fulfilled(int evenNumber)
 `Map` is used to map a regular value of type `T` to an `Option<T>`. In the example below it is combined with the `Bind` and `Match` functions to apply type and format conversions. For instance it takes the string output of `int.ToString()` and returns an `Option<string>` that can be used to continue the pipeline. `Map` will not execute if the current value is `None`, instead it will simply resolve to `None`, meaning that the pipeline will not break.
 
 ```csharp
-using OneOf.Monads
+using Svan.Monads
 
 [Fact]
 public void Convert_to_option_type_using_map()
@@ -87,7 +87,7 @@ public void Convert_to_option_type_using_map()
 `Filter` allows you to filter the current value of the option monad by passing a filter function. If the filter function returns `false` it will resolve to `None`. Giving you a convenient way of conditionally controlling a flow.
 
 ```csharp
-using OneOf.Monads
+using Svan.Monads
 
 [Fact]
 public void Use_filter_to_create_a_conditional_pipeline()
