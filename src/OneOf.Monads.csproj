@@ -13,9 +13,14 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/svan-jansson/OneOf.Monads</RepositoryUrl>
     <Description>This library adds common monads to the fantastic OneOf union type library.</Description>
-    <PackageLicenseFile></PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="../" />
+    <None Include="LICENSE" Pack="true" PackagePath="../" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OneOf" Version="3.0.271" />
   </ItemGroup>
