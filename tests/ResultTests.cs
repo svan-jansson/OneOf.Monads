@@ -241,6 +241,16 @@ namespace Svan.Monads.UnitTests
 
             Assert.Equal(expected, actual.ErrorValue());
         }
+        
+        [Fact]
+        public void OrThrow_throws_an_invalid_operation_exception()
+        {
+            var resultError = Result<int, int>.Error(0);
+            Assert.Throws<InvalidOperationException>(() => resultError.OrThrow());
+            
+            var resultSuccess = Result<int, int>.Success(1);
+            Assert.Equal(1, resultSuccess.OrThrow());
+        }
 
         class Customer
         {

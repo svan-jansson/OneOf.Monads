@@ -78,7 +78,15 @@ namespace Svan.Monads
             => Match(
                 error => fallback(error.Value),
                 success => success.Value);
-
+        
+        /// <summary>
+        /// Get the value of <c>TSuccess</c> or throw a <see cref="NullReferenceException"/>.
+        /// </summary>
+        public TSuccess OrThrow()
+            => Match(
+                error => throw new InvalidOperationException($"Expected a successful value of {typeof(TSuccess).Name} but was {error}."),
+                success => success.Value);
+        
         /// <summary>
         /// Fold into value of type <c>TOut</c> with supplied functions for case <c>TError</c> and case <c>TSuccess</c>.
         /// </summary>

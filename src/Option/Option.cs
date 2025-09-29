@@ -108,7 +108,7 @@ namespace Svan.Monads
         /// </summary>
         public TOut Fold<TOut>(Func<TOut> caseNone, Func<T, TOut> caseSome)
             => Match(
-                _none => caseNone(),
+                none => caseNone(),
                 some => caseSome(some.Value));
 
         /// <summary>
@@ -116,9 +116,17 @@ namespace Svan.Monads
         /// </summary>
         public T DefaultWith(Func<T> defaultNone)
             => Match(
-                _none => defaultNone(),
+                none => defaultNone(),
                 some => some.Value);
-
+        
+        /// <summary>
+        /// Get the value of <c>Some</c> or throw a <see cref="NullReferenceException"/>.
+        /// </summary>
+        public T OrThrow()
+            => Match(
+                none => throw new NullReferenceException($"Expected some {typeof(T).Name} but was none."),
+                some => some.Value);
+        
         /// <summary>
         /// Combine several options into a new option or <c>None</c> if any of the provided options are <c>None</c>
         /// </summary>
