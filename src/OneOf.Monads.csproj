@@ -10,7 +10,6 @@
     <Authors>Erik Svensson</Authors>
     <Copyright>Erik Svensson</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/svan-jansson/OneOf.Monads</RepositoryUrl>
     <Description>This library adds common monads to the fantastic OneOf union type library.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
