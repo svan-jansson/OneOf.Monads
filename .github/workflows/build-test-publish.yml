@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "3.1.x"
+          dotnet-version: "9.x"
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
@@ -27,9 +27,9 @@ jobs:
         run: dotnet test --no-build --verbosity normal
       - name: Pack
         if: github.ref == 'refs/heads/main'
-        run: dotnet pack -c release -o .
+        run: dotnet pack -c Release -o .
         env:
-          GITHUB_BUILD_NUMBER: ${{github.run_number}}
+          GITHUB_BUILD_NUMBER: ${{ github.run_number }}
       - name: Publish
         if: github.ref == 'refs/heads/main'
-        run: dotnet nuget push OneOf.Monads.1.${{github.run_number}}.0.nupkg -k ${{secrets.NUGET_KEY}} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push OneOf.Monads.1.${{ github.run_number }}.0.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
