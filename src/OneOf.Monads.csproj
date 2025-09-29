@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="../" />
-    <None Include="LICENSE" Pack="true" PackagePath="../" />
+    <None Include="../README.md" Pack="true" PackagePath="\" />
+    <None Include="../LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OneOf" Version="3.0.271" />
