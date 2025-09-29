@@ -30,7 +30,15 @@ namespace Svan.Monads
             => Match(
                 error => binder(error.Value),
                 success => Result<TOut, TSuccess>.Success(success.Value));
-
+        
+        /// <summary>
+        /// Recover from <c>TError</c> by providing a <c>TSuccess</c> or a new error <c>TOut</c>.
+        /// </summary>
+        public Result<TOut, TSuccess> Recover<TOut>(Func<TError, Result<TOut, TSuccess>> recover)
+            => Match(
+                error => recover(error.Value),
+                success => success.Value);
+        
         public Result<TError, TOut> Map<TOut>(Func<TSuccess, TOut> mapSuccess)
             => Match(
                 error => Result<TError, TOut>.Error(error.Value),

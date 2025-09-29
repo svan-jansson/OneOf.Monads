@@ -251,6 +251,20 @@ namespace Svan.Monads.UnitTests
             var resultSuccess = Result<int, int>.Success(1);
             Assert.Equal(1, resultSuccess.OrThrow());
         }
+        [Fact]
+        public void Recover_from_error()
+        {
+            var resultError = Result<int, int>.Error(0);
+            var actualRecoverSuccess = resultError
+                .Recover((error) => Result<string, int>.Success(error + 1))
+                .OrThrow();
+            
+            Assert.Equal(1, actualRecoverSuccess);
+            
+            var actualRecoverError = resultError
+                .Recover((error) => Result<string, int>.Error("error"));
+            Assert.Equal("error", actualRecoverError.ErrorValue());
+        }
 
         class Customer
         {
